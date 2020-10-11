@@ -10,20 +10,23 @@ import (
 	"time"
 )
 
-var server *http.Server
-
 var HOST_NM, _ = os.Hostname()
 var SERVER_NAME = os.Getenv("SERVER_NAME")
 
+const SHORT_FORMAT = "2006-01-01 15:04:05"
+const SERVER_PORT = ":8000"
+
+var server *http.Server
+
 func StartWebServer() {
-	log.Println("please visit http://127.0.0.1:12345")
+	log.Println("please visit http://127.0.0.1" + SERVER_PORT)
 
 	http.HandleFunc("/", root)
 	http.HandleFunc("/time", showtime)
 	http.HandleFunc("/sleep", sleep)
 
 	server = &http.Server{
-		Addr:           ":12345",
+		Addr:           SERVER_PORT,
 		Handler:        http.DefaultServeMux,
 		ReadTimeout:    30 * time.Second,
 		WriteTimeout:   60 * time.Second,
@@ -57,9 +60,8 @@ func root(writer http.ResponseWriter, request *http.Request) {
 func showtime(writer http.ResponseWriter, request *http.Request) {
 	log.Println("req url:", request.URL)
 	WriteFlush(writer, "response from ", HOST_NM, SERVER_NAME)
-	const shortForm = "2006-01-01 15:04:05"
-	s := fmt.Sprintf("hello ,now time is %s", time.Now().Format(shortForm))
-	fmt.Fprint(writer, s)
+	s := fmt.Sprintf("hello ,now time is %s", time.Now().Format(SHORT_FORMAT))
+	WriteFlush(writer, s)
 	log.Printf("%v\n", s)
 }
 
