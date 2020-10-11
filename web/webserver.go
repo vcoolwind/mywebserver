@@ -45,6 +45,8 @@ func Stop() {
 }
 
 func root(writer http.ResponseWriter, request *http.Request) {
+	log.Println("req url:", request.URL)
+
 	WriteFlush(writer, "response from ", HOST_NM, SERVER_NAME)
 
 	WriteFlush(writer, "you can visit list below")
@@ -53,6 +55,7 @@ func root(writer http.ResponseWriter, request *http.Request) {
 }
 
 func showtime(writer http.ResponseWriter, request *http.Request) {
+	log.Println("req url:", request.URL)
 	WriteFlush(writer, "response from ", HOST_NM, SERVER_NAME)
 	const shortForm = "2006-01-01 15:04:05"
 	s := fmt.Sprintf("hello ,now time is %s", time.Now().Format(shortForm))
@@ -61,6 +64,7 @@ func showtime(writer http.ResponseWriter, request *http.Request) {
 }
 
 func sleep(writer http.ResponseWriter, request *http.Request) {
+	log.Println("req url:", request.URL)
 	WriteFlush(writer, "response from ", HOST_NM, SERVER_NAME)
 	var info, cnt string
 	cnt = request.URL.Query().Get("cnt")
