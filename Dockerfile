@@ -9,7 +9,7 @@ ENV SERVER_NAME webserver-default
 
 WORKDIR /go/webserver
 COPY  mywebserver /go/webserver/mywebserver
-EXPOSE 12345
+EXPOSE 8000
 RUN chmod +x /go/webserver/mywebserver
 CMD ["/go/webserver/mywebserver"]
 
