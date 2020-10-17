@@ -43,30 +43,34 @@ func StartWebServer() {
 }
 
 func Stop() {
-	log.Println("webserver will stop")
+	log.Println("webs erver will stop")
 	server.Shutdown(context.Background())
 }
 
 func root(writer http.ResponseWriter, request *http.Request) {
-	log.Println("req url:", request.URL)
+	logReqInfo(request)
 
 	WriteFlush(writer, "response from ", HOST_NM, SERVER_NAME)
 
 	WriteFlush(writer, "you can visit list below")
 	WriteFlush(writer, "http://127.0.0.1:12345/time")
 	WriteFlush(writer, "http://127.0.0.1:12345/sleep?cnt=10")
+
+	showReqInfo(request,writer)
 }
 
 func showtime(writer http.ResponseWriter, request *http.Request) {
-	log.Println("req url:", request.URL)
+	logReqInfo(request)
 	WriteFlush(writer, "response from ", HOST_NM, SERVER_NAME)
-	s := fmt.Sprintf("hello ,now time is %s", time.Now().Format(SHORT_FORMAT))
+	s := fmt.Sprintf("hello,now time is %s", time.Now().Format(SHORT_FORMAT))
 	WriteFlush(writer, s)
 	log.Printf("%v\n", s)
+
+	showReqInfo(request,writer)
 }
 
 func sleep(writer http.ResponseWriter, request *http.Request) {
-	log.Println("req url:", request.URL)
+	logReqInfo(request)
 	WriteFlush(writer, "response from ", HOST_NM, SERVER_NAME)
 	var info, cnt string
 	cnt = request.URL.Query().Get("cnt")
@@ -84,10 +88,34 @@ func sleep(writer http.ResponseWriter, request *http.Request) {
 	info = "sleep over"
 	WriteFlush(writer, info)
 	log.Printf("%v\n", info)
+
+	showReqInfo(request,writer)
 }
 
 func WriteFlush(writer http.ResponseWriter, a ...interface{}) {
 	fmt.Fprint(writer, a)
 	fmt.Fprint(writer, "\n")
 	writer.(http.Flusher).Flush()
+}
+
+func showReqInfo(request *http.Request,writer http.ResponseWriter){
+	fmt.Fprint(writer, "\n")
+	fmt.Fprint(writer,"------------req info ---------\n")
+	fmt.Fprint(writer,"req url info:\n")
+	fmt.Fprint(writer,fmt.Sprintf("    [%s]\n",request.URL.String()))
+	fmt.Fprint(writer,"Header info:\n")
+	for key, value := range request.Header {
+		fmt.Fprint(writer,fmt.Sprintf("    [%s]=%v\n",key,value))
+	}
+	writer.(http.Flusher).Flush()
+}
+
+func logReqInfo(request *http.Request){
+	log.Println("------------req info ---------")
+	fmt.Println("Url info:")
+	fmt.Printf("    [%s]\n",request.URL.String())
+	fmt.Println("Header info:")
+	for key, value := range request.Header {
+		fmt.Printf("    [%s]=%v\n",key,value)
+	}
 }
